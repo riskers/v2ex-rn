@@ -19,9 +19,9 @@ interface ITopics {
   title: string;
 }
 
-interface IProps = {}
-interface IState = {
-  hotTopics: Array<ITopics>;
+interface IProps {}
+interface IState {
+  hotTopics: ITopics[];
 }
 
 export default class App extends React.Component<IProps, IState> {

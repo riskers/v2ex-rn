@@ -1,8 +1,7 @@
-import React from 'react';
-import { Component } from 'react';
-import { StyleSheet, Text, View, FlatList, Image } from 'react-native';
+import * as React from 'react';
+import { FlatList, Image, StyleSheet, Text, View } from 'react-native';
 
-const HOT_URL = 'https://www.v2ex.com/api/topics/hot.json'
+const HOT_URL = 'https://www.v2ex.com/api/topics/hot.json';
 
 const styles = StyleSheet.create({
   container: {
@@ -20,12 +19,12 @@ interface ITopics {
   title: string;
 }
 
-type IProps = {};
-type IState = {
-  hotTopics: ITopics[],
-};
+interface IProps = {}
+interface IState = {
+  hotTopics: Array<ITopics>;
+}
 
-export default class App extends Component<IProps, IState> {
+export default class App extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
 
@@ -40,7 +39,7 @@ export default class App extends Component<IProps, IState> {
         return response.json();
       })
       .then((data) => {
-        const hotTopics: ITopics = data.map((item) => {
+        const hotTopics = data.map((item: ITopics) => {
           const {
             id,
             url,
@@ -63,7 +62,7 @@ export default class App extends Component<IProps, IState> {
         this.setState({
           hotTopics,
         });
-      })
+      });
   }
 
   componentDidMount() {
@@ -72,8 +71,8 @@ export default class App extends Component<IProps, IState> {
 
   renderTopic = ({ item }) => {
     return (
-      <View key={item.key}>
-        <Text>{item.title}</Text>
+      <View key={ item.key }>
+        <Text>{ item.title }</Text>
       </View>
     );
   }
@@ -83,15 +82,11 @@ export default class App extends Component<IProps, IState> {
       hotTopics,
     } = this.state;
 
-    if (hotTopics.length === 0) {
-      return <Text>123</Text>
-    }
-
     return (
-      <View style={styles.container}>
+      <View style={ styles.container }>
         <FlatList
-          data={hotTopics}
-          renderItem={this.renderTopic}
+          data={ hotTopics }
+          renderItem={ this.renderTopic }
         />
       </View>
     );

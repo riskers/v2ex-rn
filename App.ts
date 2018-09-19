@@ -1,14 +1,14 @@
 import * as React from 'react';
-import { FlatList, Image, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, FlatList, Image, StyleSheet, Text, View } from 'react-native';
+import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
+import Reactotron from 'reactotron-react-native';
 
 const HOT_URL = 'https://www.v2ex.com/api/topics/hot.json';
+const NEW_URL = 'https://www.v2ex.com/api/topics/latest.json';
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+
   },
 });
 
@@ -19,9 +19,21 @@ interface ITopics {
   title: string;
 }
 
+interface IRoute {
+  key: string;
+  title: string;
+}
+
+const routes: IRoute[] = [
+  {key: 'HOT', title: 'hot topics'},
+  {key: 'NEW', title: 'new topics'},
+];
+
 interface IProps {}
 interface IState {
+  tabIndex: number;
   hotTopics: ITopics[];
+  newTopics: ITopics[];
 }
 
 export default class App extends React.Component<IProps, IState> {
@@ -29,17 +41,19 @@ export default class App extends React.Component<IProps, IState> {
     super(props);
 
     this.state = {
+      tabIndex: 0,
       hotTopics: [],
+      newTopics: [],
     };
   }
 
-  getchHotTopics() {
-    fetch(HOT_URL)
+  fetchTopics(topicUrl: string) {
+    return fetch(topicUrl)
       .then((response) => {
         return response.json();
       })
       .then((data) => {
-        const hotTopics = data.map((item: ITopics) => {
+        return data.map((item: ITopics) => {
           const {
             id,
             url,
@@ -58,37 +72,78 @@ export default class App extends React.Component<IProps, IState> {
             avatar: avatar_normal,
           };
         });
+      })
+  }
 
+  fetchHotTopics() {
+    this.fetchTopics(HOT_URL)
+      .then((topics) => {
         this.setState({
-          hotTopics,
+          hotTopics: topics,
         });
-      });
+      })
+  }
+
+  fetchNewTopics() {
+    this.fetchTopics(NEW_URL)
+      .then((topics) => {
+        this.setState({
+          newTopics: topics,
+        });
+      })
   }
 
   componentDidMount() {
-    this.getchHotTopics();
+    this.fetchHotTopics();
+    this.fetchNewTopics();
   }
 
-  renderTopic = ({ item }) => {
+  renderTopic = (topics) => {
     return (
-      <View key={ item.key }>
-        <Text>{ item.title }</Text>
-      </View>
+      <FlatList
+        data={topics}
+        renderItem={({item}) => {
+          return (
+            <View key={item.key}>
+              <Text>{item.title}</Text>
+            </View>
+          );
+        }}
+      />
     );
   }
 
   render() {
     const {
+      tabIndex,
       hotTopics,
+      newTopics,
     } = this.state;
 
     return (
-      <View style={ styles.container }>
-        <FlatList
-          data={ hotTopics }
-          renderItem={ this.renderTopic }
-        />
-      </View>
+      <TabView
+        navigationState={{
+          index: tabIndex,
+          routes,
+        }}
+        renderScene={
+          SceneMap(
+            {
+              HOT: () => {
+                return this.renderTopic(hotTopics)
+              },
+              NEW: () => {
+                return this.renderTopic(newTopics)
+              },
+            }
+          )
+        }
+        onIndexChange={index => this.setState({tabIndex: index})}
+        initialLayout={{
+          width: Dimensions.get('window').width,
+          height: Dimensions.get('window').height,
+        }}
+      />
     );
   }
 }

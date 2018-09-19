@@ -9,17 +9,20 @@
   },
   "dependencies": {
     "react": "16.5.0",
-    "react-native": "0.57.0"
+    "react-native": "0.57.0",
+    "react-native-tab-view": "^1.0.2"
   },
   "devDependencies": {
     "@types/react": "^16.4.14",
     "@types/react-native": "^0.56.19",
+    "@types/react-native-tab-view": "^1.0.2",
     "babel-jest": "23.6.0",
     "jest": "23.6.0",
     "metro-react-native-babel-preset": "0.45.3",
     "react-devtools": "^3.3.4",
     "react-native-typescript-transformer": "^1.2.10",
     "react-test-renderer": "16.5.0",
+    "reactotron-react-native": "^2.1.0",
     "tslint": "^5.11.0",
     "tslint-config-airbnb": "^5.11.0",
     "tslint-react": "^3.6.0",

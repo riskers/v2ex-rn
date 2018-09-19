@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Dimensions, FlatList, Image, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, FlatList, Image, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
 import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
 import Reactotron from 'reactotron-react-native';
 
@@ -7,8 +7,12 @@ const HOT_URL = 'https://www.v2ex.com/api/topics/hot.json';
 const NEW_URL = 'https://www.v2ex.com/api/topics/latest.json';
 
 const styles = StyleSheet.create({
-  container: {
-
+  row: {
+    padding: 10,
+  },
+  title: {
+    fontSize: 20,
+    color: '#666',
   },
 });
 
@@ -98,14 +102,20 @@ export default class App extends React.Component<IProps, IState> {
     this.fetchNewTopics();
   }
 
+  onPressTopic = () => {
+
+  }
+
   renderTopic = (topics) => {
     return (
       <FlatList
         data={topics}
         renderItem={({item}) => {
           return (
-            <View key={item.key}>
-              <Text>{item.title}</Text>
+            <View key={item.key} style={styles.row}>
+              <TouchableHighlight onPress={this.onPressTopic} activeOpacity={0.3}>
+                <Text style={styles.title}>{item.title}</Text>
+              </TouchableHighlight>
             </View>
           );
         }}
